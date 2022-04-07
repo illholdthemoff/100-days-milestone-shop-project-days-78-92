@@ -6,6 +6,8 @@ const router = express.Router();
 
 router.get("/signup", authController.getSignup);
 
+router.post("/signup", authController.signup); // using .post because you should whenever a route is making changes to the server
+
 router.get("/login", authController.getLogin);
 
 module.exports = router;
