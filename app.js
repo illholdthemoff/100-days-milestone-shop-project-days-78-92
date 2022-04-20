@@ -13,6 +13,7 @@ const authRoutes = require("./routes/auth.routes");
 const productRoutes = require("./routes/products.routes");
 const baseRoutes = require("./routes/base.routes");
 const checkAuthStatus = require("./middlewares/check-auth");
+const adminRoutes = require("./routes/admin.routes");
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use(checkAuthStatusMiddleware); // using after the session so that it will w
 app.use(baseRoutes);
 app.use(authRoutes); // makes sure that this middleware is used for eveyr valid incoming request
 app.use(productRoutes);
+app.use("/admin", adminRoutes); // filter, so that only routs that begin with /admin will make it in ehre
 
 app.use(errorHandlerMiddleware);
 
