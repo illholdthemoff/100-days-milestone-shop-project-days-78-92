@@ -15,4 +15,9 @@ router.post(
   adminController.createNewProduct
 ); // this works because you can add multiple middlewares before using the controller at the end
 
+router.get("/products/:id", adminController.getUpdateProduct);
+
+router.post("/products/:id", adminController.updateProduct);
+
+
 module.exports = router;
