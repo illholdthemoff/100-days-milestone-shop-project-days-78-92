@@ -17,7 +17,10 @@ router.post(
 
 router.get("/products/:id", adminController.getUpdateProduct);
 
-router.post("/products/:id", adminController.updateProduct);
-
+router.post(
+  "/products/:id",
+  imageUploadMiddleware,
+  adminController.updateProduct
+); // imageuploadmiddleware is needed sicne this is posting with the image in mind, even if its not used. Otherwise it will delete everything in the field but the image.
 
 module.exports = router;
