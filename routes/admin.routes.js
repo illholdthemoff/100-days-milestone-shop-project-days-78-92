@@ -23,4 +23,6 @@ router.post(
   adminController.updateProduct
 ); // imageuploadmiddleware is needed sicne this is posting with the image in mind, even if its not used. Otherwise it will delete everything in the field but the image.
 
+router.delete("/products/:id", adminController.deleteProduct);
+
 module.exports = router;
