@@ -9,11 +9,13 @@ const db = require("./data/database");
 const addCsrfTokenMiddleware = require("./middlewares/csrf-token");
 const errorHandlerMiddleware = require("./middlewares/error-handler");
 const checkAuthStatusMiddleware = require("./middlewares/check-auth");
+const protectRoutesMiddleware = require("./middlewares/protect-routes");
 const authRoutes = require("./routes/auth.routes");
 const productRoutes = require("./routes/products.routes");
 const baseRoutes = require("./routes/base.routes");
 const checkAuthStatus = require("./middlewares/check-auth");
 const adminRoutes = require("./routes/admin.routes");
+const protectRoutes = require("./middlewares/protect-routes");
 
 const app = express();
 
@@ -35,6 +37,7 @@ app.use(checkAuthStatusMiddleware); // using after the session so that it will w
 app.use(baseRoutes);
 app.use(authRoutes); // makes sure that this middleware is used for eveyr valid incoming request
 app.use(productRoutes);
+app.use(protectRoutesMiddleware); // goalkeeps people from entering into routes where they arent supposed to by checking their authentication against 2 checks. 1. whether they are authorized ie logged in, and 2, whether they are admin or not, getting increased access with each pass.
 app.use("/admin", adminRoutes); // filter, so that only routs that begin with /admin will make it in ehre
 
 app.use(errorHandlerMiddleware);
