@@ -1,5 +1,9 @@
 const Product = require("../models/product.model");
 
+function getCart(req, res) {
+  res.render("customer/cart/cart");
+}
+
 async function addCartItem(req, res, next) {
   let product; // this is a let and out here so that we can throw it in res.locals.cart. Otherwise product below would be a const and not be up here, thus just be scoped to the try block.
   try {
@@ -23,4 +27,5 @@ async function addCartItem(req, res, next) {
 
 module.exports = {
   addCartItem: addCartItem,
+  getCart: getCart
 };

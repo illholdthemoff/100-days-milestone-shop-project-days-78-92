@@ -16,8 +16,8 @@ class Cart {
     for (let i = 0; i < this.items.length; i++) {
       const item = this.items[i];
       if (item.product === product.id) {
-        cartItem.quantity = cartItem.quantity + 1;
-        cartItem.totalPrice = cartItem.totalPrice + product.price;
+        cartItem.quantity = item.quantity + 1;
+        cartItem.totalPrice = item.totalPrice + product.price;
         this.items[i] = cartItem; // updates the cart
 
         this.totalQuantity++; // adding an item to the cart when we add an item. The above if you remember refers to quantities of an individual item ie how many socks you have as opposed to this, the total quant of all items in cart.
