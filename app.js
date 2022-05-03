@@ -17,6 +17,7 @@ const baseRoutes = require("./routes/base.routes");
 const checkAuthStatus = require("./middlewares/check-auth");
 const adminRoutes = require("./routes/admin.routes");
 const protectRoutes = require("./middlewares/protect-routes");
+const cartRoutes = require("./routes/cart.routes");
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static("public"));
 app.use("/products/assets", express.static("product-data"));
 app.use(express.urlencoded({ extended: false }));
+app.use(express.json()); // done so that we can check all incoming requests for json data.
 
 const sessionConfig = createSessionConfig();
 
@@ -40,6 +42,7 @@ app.use(checkAuthStatusMiddleware); // using after the session so that it will w
 app.use(baseRoutes);
 app.use(authRoutes); // makes sure that this middleware is used for eveyr valid incoming request
 app.use(productRoutes);
+app.use("/cart", cartRoutes); // filter, so that only routes that begin with /cart will go here.
 app.use(protectRoutesMiddleware); // goalkeeps people from entering into routes where they arent supposed to by checking their authentication against 2 checks. 1. whether they are authorized ie logged in, and 2, whether they are admin or not, getting increased access with each pass.
 app.use("/admin", adminRoutes); // filter, so that only routs that begin with /admin will make it in ehre
 
