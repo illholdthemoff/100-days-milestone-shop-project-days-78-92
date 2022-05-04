@@ -7,7 +7,7 @@ function getCart(req, res) {
 async function addCartItem(req, res, next) {
   let product; // this is a let and out here so that we can throw it in res.locals.cart. Otherwise product below would be a const and not be up here, thus just be scoped to the try block.
   try {
-    product = Product.findById(req.body.productId); // psot request, since we are posting data to the server (as in adding etc, so we grab from the body which we cannot do with a get request)
+    product = await Product.findById(req.body.productId); // psot request, since we are posting data to the server (as in adding etc, so we grab from the body which we cannot do with a get request)
   } catch (error) {
     next(error);
     return;
@@ -27,5 +27,5 @@ async function addCartItem(req, res, next) {
 
 module.exports = {
   addCartItem: addCartItem,
-  getCart: getCart
+  getCart: getCart,
 };
