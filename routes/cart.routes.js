@@ -8,4 +8,6 @@ router.get("/", cartController.getCart); // effectively /cart/ due to our filter
 
 router.post("/items", cartController.addCartItem); // /cart/items
 
+router.patch("/items", cartController.updateCartItem);
+
 module.exports = router;
