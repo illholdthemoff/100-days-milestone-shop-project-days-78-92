@@ -1,4 +1,5 @@
 const bcrypt = require("bcryptjs");
+const mongodb = require("mongodb");
 
 const db = require("../data/database");
 
@@ -13,6 +14,17 @@ class User {
       city: city,
     };
   } // nested object
+
+  static findById(userId) {
+    // finds a user by ID then returns some of that data in the form of a document.
+    //also not async because we are returning the promise below already.
+    const uid = new mongodb.ObjectId(userId); // taking the userId entered and converting it into a mongodb format
+
+    return db
+      .getDb()
+      .collection("users")
+      .findOne({ _id: uid }, { projection: { password: 0 } }); // checking in the database if any id matches the given. The 0 with password means specifically that we do NOT want that returned.
+  }
 
   getUserWithsameEmail() {
     return db.getDb().collection("users").findOne({ email: this.email }); // searches the database for an email that maatches the one where this function is being used. We do not need to add 'async' here, since by defualt here we are retuning a promise (findOne results are a promise)

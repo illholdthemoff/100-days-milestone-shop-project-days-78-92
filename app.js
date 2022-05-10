@@ -18,6 +18,7 @@ const checkAuthStatus = require("./middlewares/check-auth");
 const adminRoutes = require("./routes/admin.routes");
 const protectRoutes = require("./middlewares/protect-routes");
 const cartRoutes = require("./routes/cart.routes");
+const ordersRoutes = require("./routes/orders.routes");
 
 const app = express();
 
@@ -44,6 +45,7 @@ app.use(authRoutes); // makes sure that this middleware is used for eveyr valid 
 app.use(productRoutes);
 app.use("/cart", cartRoutes); // filter, so that only routes that begin with /cart will go here.
 app.use(protectRoutesMiddleware); // goalkeeps people from entering into routes where they arent supposed to by checking their authentication against 2 checks. 1. whether they are authorized ie logged in, and 2, whether they are admin or not, getting increased access with each pass.
+app.use("/orders", ordersRoutes);
 app.use("/admin", adminRoutes); // filter, so that only routs that begin with /admin will make it in ehre
 
 app.use(errorHandlerMiddleware);
