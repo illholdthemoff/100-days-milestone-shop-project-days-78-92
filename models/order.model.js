@@ -1,3 +1,5 @@
+const mongodb = require("mongodb");
+
 const db = require("../data/database");
 
 class Order {
@@ -19,10 +21,65 @@ class Order {
     this.id = orderId;
   }
 
+  static transformOrderDocument(orderDoc) {
+    return new Order(
+      orderDoc.productData,
+      orderDoc.userData,
+      orderDoc.status,
+      orderDoc.date,
+      orderDoc._id
+    );
+  }
+
+  static transformOrderDocuments(orderDocs) {
+    // creates an array of the orderDocs
+    return orderDocs.map(this.transformOrderDocument);
+  }
+
+  static async findAll() {
+    // returns every single order.
+    const orders = await db
+      .getDb()
+      .collection("orders")
+      .find()
+      .sort({ _id: -1 })
+      .toArray();
+
+    return this.transformOrderDocuments(orders);
+  }
+
+  static async findAllForUser(userId) {
+    // finds and returns all orders a given user made
+    const uid = new mongodb.ObjectId(userId);
+
+    const orders = await db
+      .getDb()
+      .collection("orders")
+      .find({ "userData._id": uid })
+      .sort({ _id: -1 }) // sorts in descending order
+      .toArray();
+
+    return this.transformOrderDocuments(orders);
+  }
+
+  static async findById(orderId) {
+    const order = await db
+      .getDb()
+      .collection("orders")
+      .findOne({ _id: new mongodb.ObjectId(orderId) });
+
+    return this.transformOrderDocument(order);
+  }
+
   save() {
     // here we are taking the above data we get from an instance of the Order class and formatting it in a way such that we can throw it into the database.
     if (this.id) {
       // checking if ID exists ie if the order exists, and therefore updating
+      const orderId = new mongodb.ObjectId(this.id);
+      return db
+        .getDb()
+        .collection("orders")
+        .updateOne({ _id: orderId }, { $set: { status: this.status } });
     } else {
       const orderDocument = {
         // creating a document to throw in the database
