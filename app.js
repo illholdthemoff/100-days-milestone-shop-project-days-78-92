@@ -11,6 +11,8 @@ const errorHandlerMiddleware = require("./middlewares/error-handler");
 const checkAuthStatusMiddleware = require("./middlewares/check-auth");
 const protectRoutesMiddleware = require("./middlewares/protect-routes");
 const cartMiddleware = require("./middlewares/cart");
+const updateCartPricesMiddleware = require("./middlewares/update-cart-prices");
+const notFoundMiddleware = require("./middlewares/not-found");
 const authRoutes = require("./routes/auth.routes");
 const productRoutes = require("./routes/products.routes");
 const baseRoutes = require("./routes/base.routes");
@@ -36,6 +38,7 @@ app.use(expressSession(sessionConfig));
 app.use(csrf());
 
 app.use(cartMiddleware);
+app.use(updateCartPricesMiddleware);
 
 app.use(addCsrfTokenMiddleware);
 app.use(checkAuthStatusMiddleware); // using after the session so that it will work, as it grabs info from the session
@@ -44,9 +47,12 @@ app.use(baseRoutes);
 app.use(authRoutes); // makes sure that this middleware is used for eveyr valid incoming request
 app.use(productRoutes);
 app.use("/cart", cartRoutes); // filter, so that only routes that begin with /cart will go here.
-app.use(protectRoutesMiddleware); // goalkeeps people from entering into routes where they arent supposed to by checking their authentication against 2 checks. 1. whether they are authorized ie logged in, and 2, whether they are admin or not, getting increased access with each pass.
-app.use("/orders", ordersRoutes);
-app.use("/admin", adminRoutes); // filter, so that only routs that begin with /admin will make it in ehre
+//app.use(protectRoutesMiddleware); // goalkeeps people from entering into routes where they arent supposed to by checking their authentication against 2 checks. 1. whether they are authorized ie logged in, and 2, whether they are admin or not, getting increased access with each pass. CHANGED IN ORDER TO ACCOMODATE notFoundMiddleware!!!
+app.use("/orders", protectRoutesMiddleware, ordersRoutes);
+app.use("/admin", protectRoutesMiddleware, adminRoutes); // filter, so that only routs that begin with /admin will make it in ehre
+//protectRoutesMiddleware added within here due to the below notFoundMiddleware. Remember multiple middlewares can be added, which are then executed left to right!
+
+app.use(notFoundMiddleware); // covers all other routes IE ones taht don't exist
 
 app.use(errorHandlerMiddleware);
 

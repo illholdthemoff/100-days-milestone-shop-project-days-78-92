@@ -1,7 +1,7 @@
 const addToCartButtonElement = document.querySelector(
   "#product-details button"
 );
-const cartBadgeElement = document.querySelector(".nav-items .badge");
+const cartBadgeElements = document.querySelectorAll(".nav-items .badge");
 
 async function addToCart() {
   const productId = addToCartButtonElement.dataset.productid; // we added the dataset to the add to cart button in product-details.ejs
@@ -33,7 +33,9 @@ async function addToCart() {
 
   const newTotalQuantity = responseData.newTotalItems;
 
-  cartBadgeElement.textContent = newTotalQuantity; // updates the badge thing to say whatver the newtotalquant of items is so IT SUPDATES
+  for (const cartBadgeElement of cartBadgeElements) {
+    cartBadgeElement.textContent = newTotalQuantity; // updates the badge thing to say whatver the newtotalquant of items is so IT SUPDATES
+  }
 }
 
 addToCartButtonElement.addEventListener("click", addToCart);

@@ -45,6 +45,22 @@ class Product {
     });
   }
 
+  static async findMultiple(ids) {
+    const productIds = ids.map(function (id) {
+      return new mongodb.ObjectId(id); // turns them into mongodb id objects
+    });
+
+    const products = await db
+      .getDb()
+      .collection("products")
+      .find({ _id: { $in: productIds } }) // returns all product ids within the productIds document within mongo
+      .toArray();
+
+    return products.map(function (productDocument) {
+      return new Product(productDocument); // turns it into an array of Products, as in the class.
+    });
+  }
+
   updateImageData() {
     this.imagePath = `product-data/images/${this.image}`;
     this.imageUrl = `/products/assets/images/${this.image}`;
