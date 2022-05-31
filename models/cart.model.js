@@ -19,12 +19,12 @@ class Cart {
     for (const cartItem of this.items) {
       // checks to see if a given item within a list of items is actually still in the cart or not
       const product = products.find(function (prod) {
-        return prod.id === cartItem.product.id;
+        return prod.id === cartItem.product.id; // checking if the product id matches any of the cart items
       });
 
       if (!product) {
         //product was deleted from products list but in the cart, schedule for removal from cart
-        deletableCartItemProductIds.push(cartItem.product.id); // buhleets the item
+        deletableCartItemProductIds.push(cartItem.product.id); // sends the item from the cart into the array to be deleted
         continue; // basically immediately starts the next iteration of our for loop without executing the below code.
       }
 
@@ -52,7 +52,7 @@ class Cart {
   }
 
   addItem(product) {
-    const cartItem = {
+    const cartItem = { 
       product: product,
       quantity: 1,
       totalPrice: product.price,
@@ -60,13 +60,13 @@ class Cart {
 
     for (let i = 0; i < this.items.length; i++) {
       const item = this.items[i];
-      if (item.product.id === product.id) {
-        cartItem.quantity = +item.quantity + 1;
-        cartItem.totalPrice = item.totalPrice + product.price;
+      if (item.product.id === product.id) { // if an item matching the id is already in the cart
+        cartItem.quantity = +item.quantity + 1; // increments the amount of that item in the cart
+        cartItem.totalPrice = item.totalPrice + product.price; // then of course adds the price to the total price of that set of items (ie 3 burgers @ $1 would then be cartItem.totalPrice = $3)
         this.items[i] = cartItem; // updates the cart
 
         this.totalQuantity++; // adding an item to the cart when we add an item. The above if you remember refers to quantities of an individual item ie how many socks you have as opposed to this, the total quant of all items in cart.
-        this.totalPrice += product.price;
+        this.totalPrice += product.price; // same as mentioned directly above, price of all items in the cart vs price of all of a given product in the cart.
         return; // returns because in many ways the bit below does that already so itd be redundant
       }
     }
@@ -76,17 +76,17 @@ class Cart {
     this.totalPrice += product.price;
   }
 
-  updateItem(productId, newQuantity) {
-    for (let i = 0; i < this.items.length; i++) {
-      const item = this.items[i];
-      if (item.product.id === productId && newQuantity > 0) {
+  updateItem(productId, newQuantity) { // upadtes items within the card
+    for (let i = 0; i < this.items.length; i++) { // iterates through a list of all items(in the cart)
+      const item = this.items[i]; // grabs the current item on the current iteraion of the loop
+      if (item.product.id === productId && newQuantity > 0) { // if the current item matches the newquantity and the product id and also exists
         const cartItem = { ...item };
-        const quantityChange = newQuantity - item.quantity;
-        cartItem.quantity = newQuantity;
-        cartItem.totalPrice = newQuantity * item.product.price;
+        const quantityChange = newQuantity - item.quantity; // updates the quantity
+        cartItem.quantity = newQuantity; // then upddates it within the cart as well
+        cartItem.totalPrice = newQuantity * item.product.price; // then comes up with total price by multiplying the new quantity with the price of the item
         this.items[i] = cartItem;
 
-        this.totalQuantity = this.totalQuantity + quantityChange;
+        this.totalQuantity = this.totalQuantity + quantityChange; // again just going through and updating the quantity
         this.totalPrice += quantityChange * item.product.price;
         return { updatedItemPrice: cartItem.totalPrice };
       } else if (item.product.id === productId && newQuantity <= 0) {

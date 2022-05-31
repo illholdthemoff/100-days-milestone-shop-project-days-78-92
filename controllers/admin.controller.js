@@ -1,11 +1,11 @@
-const Product = require("../models/product.model");
+const Product = require("../models/product.model"); // grabs both of the product and order model files so that it is able to work with them
 const Order = require("../models/order.model");
 
-async function getProducts(req, res, next) {
+async function getProducts(req, res, next) { // fetches a list of every product
   try {
-    const products = await Product.findAll();
-    res.render("admin/products/all-products", { products: products });
-  } catch (error) {
+    const products = await Product.findAll(); // awaits and tries to find every product
+    res.render("admin/products/all-products", { products: products }); // renders the all-products page and uses data from products to fill in the blanks (ie fills up the products fields with product data.)
+  } catch (error) { // checking for any potential errors that could occur with this, catching it and then returning next
     next(error);
     return;
   }

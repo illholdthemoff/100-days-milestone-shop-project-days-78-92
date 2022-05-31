@@ -1,7 +1,7 @@
 async function updateCartPrices(req, res, next) {
-  const cart = res.locals.cart; // getting the cart from the session(?)
+  const cart = res.locals.cart; // getting the cart from res.locals
 
-  await cart.updatePrices();
+  await cart.updatePrices(); // calling the updateprices from cart.model
 
   //req.session.cart = cart;
   next();
