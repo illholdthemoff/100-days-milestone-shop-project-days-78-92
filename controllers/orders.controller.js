@@ -17,6 +17,8 @@ async function getOrders(req, res) {
 }
 
 async function addOrder(req, res, next) {
+  const cart = res.locals.cart;
+
   let userDocument;
   try {
     userDocument = await User.findById(res.locals.uid);
@@ -39,22 +41,22 @@ async function addOrder(req, res, next) {
     payment_method_types: [
       "card",
     ],
-    line_items: [
-      {
-        // this is where you could enter in the entry of your product from stripe's database for your store. In this case hwoeever, we enter it in on the fly.
+    line_items: cart.items.map(function(item) { // every time we run through an item here in the cart it will map the data in this format, adding things as necessary (currency data etc)
+       return {
         price_data: {
           currency: 'usd',
           product_data: {
-            name: "Dummy"
+            name: item.product.title
           },
-          unit_amount_decimal: 10.99,
+          unit_amount: +item.product.price.toFixed(2) * 100 // + in front to ensure that the resulting data is a number and not a string. Here we use unit_amount specifically because this avoids any possible decimal errors. Here we effectively enter in the price as cents as opposed to dollars+cents (500 cents instead of $5) 
         },
-        quantity: 1,
-      },
-    ],
+        quantity: item.quantity,
+      }
+       
+    }),
     mode: "payment",
-    success_url: `localhost:3000/orders/success`, // these 2 URLS redirect the user depending on the success or failure of the transaction
-    cancel_url: `localhost:3000/orders/cancel`,
+    success_url: `http://localhost:3000/orders/success`, // these 2 URLS redirect the user depending on the success or failure of the transaction
+    cancel_url: `http://localhost:3000/orders/cancel`,
   });
   res.redirect(303, session.url)
 
