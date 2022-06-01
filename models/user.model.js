@@ -31,15 +31,15 @@ class User {
   }
 
   async existsAlready() {
-    const existingUser = await this.getUserWithsameEmail();
+    const existingUser = await this.getUserWithsameEmail(); // checking if the emails match up
     if (existingUser) {
-      return true;
+      return true; // the user exists already
     }
-    return false;
+    return false; // user does not exist already
   }
 
   async signup() {
-    const hashedPassword = await bcrypt.hash(this.password, 12);
+    const hashedPassword = await bcrypt.hash(this.password, 12); // taking the password and hashing it via an algorithm with a strength of 12
 
     await db.getDb().collection("users").insertOne({
       email: this.email,
@@ -47,7 +47,7 @@ class User {
       name: this.name,
       address: this.address,
     });
-  } // the objective of this is to take the properties of a User instance and put them into the database
+  } // the objective of this is to take the properties of a User instance and put them into the database. Storing the hashed password of course so if the db is breached/leaked all user info isn't released
 
   hasMatchingPassword(hashedPassword) {
     return bcrypt.compare(this.password, hashedPassword); // comapres the unhashed password (as added by user) and compares it to the hashed password stored within the database. Returns a promise

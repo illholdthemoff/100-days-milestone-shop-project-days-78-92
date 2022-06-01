@@ -1,23 +1,23 @@
 const cartItemUpdateFormElements = document.querySelectorAll(
   ".cart-item-management"
 );
-const cartTotalPriceElement = document.getElementById("cart-total-price");
-const cartBadgeElements = document.querySelectorAll(".nav-items .badge");
+const cartTotalPriceElement = document.getElementById("cart-total-price"); // grabbing the cart-total-price id 
+const cartBadgeElements = document.querySelectorAll(".nav-items .badge"); // grabbing whatever has the .nav-items and .badge classes
 
 async function updateCartItem(event) {
-  event.preventDefault();
+  event.preventDefault(); // prevents default behavior IE page refreshing
 
-  const form = event.target;
+  const form = event.target; //the event target ie the page
 
-  const productId = form.dataset.productid;
+  const productId = form.dataset.productid; // grabbing the id, csrf and quantities from the page
   const csrfToken = form.dataset.csrf;
   const quantity = form.firstElementChild.value;
 
   let response;
   try {
-    response = await fetch("/cart/items", {
+    response = await fetch("/cart/items", { // fetching and patching 
       method: "PATCH",
-      body: JSON.stringify({
+      body: JSON.stringify({ // converting the body js object into a json object
         productId: productId,
         quantity: quantity,
         _csrf: csrfToken,
