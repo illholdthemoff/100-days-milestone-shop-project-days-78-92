@@ -3,7 +3,9 @@ const stripe = require("stripe");
 const Order = require("../models/order.model");
 const User = require("../models/user.model");
 
-const stripeObj = stripe("sk_test_51L3REDHLAsqlklk1zMfUfklA0VW3KwqkZNRFGP1heYbfAWA4Z1VQbFcdWUOOeNesS0dmMRlxbkupxNorZ3PPWf3Q00cTxVLROy")
+const stripeObj = stripe(
+  "sk_test_51L3REDHLAsqlklk1zMfUfklA0VW3KwqkZNRFGP1heYbfAWA4Z1VQbFcdWUOOeNesS0dmMRlxbkupxNorZ3PPWf3Q00cTxVLROy"
+);
 
 async function getOrders(req, res) {
   try {
@@ -37,28 +39,25 @@ async function addOrder(req, res, next) {
 
   req.session.cart = null;
 
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: [
-      "card",
-    ],
-    line_items: cart.items.map(function(item) { // every time we run through an item here in the cart it will map the data in this format, adding things as necessary (currency data etc)
-       return {
+  const session = await stripeObj.checkout.sessions.create({
+    payment_method_types: ["card"],
+    line_items: cart.items.map(function (item) {
+      return {
         price_data: {
-          currency: 'usd',
+          currency: "usd",
           product_data: {
-            name: item.product.title
+            name: item.product.title,
           },
-          unit_amount: +item.product.price.toFixed(2) * 100 // + in front to ensure that the resulting data is a number and not a string. Here we use unit_amount specifically because this avoids any possible decimal errors. Here we effectively enter in the price as cents as opposed to dollars+cents (500 cents instead of $5) 
+          unit_amount: +item.product.price.toFixed(2) * 100, // + in front to ensure that the resulting data is a number and not a string. Here we use unit_amount specifically because this avoids any possible decimal errors. Here we effectively enter in the price as cents as opposed to dollars+cents (500 cents instead of $5)
         },
         quantity: item.quantity,
-      }
-       
+      };
     }),
     mode: "payment",
     success_url: `http://localhost:3000/orders/success`, // these 2 URLS redirect the user depending on the success or failure of the transaction
     cancel_url: `http://localhost:3000/orders/cancel`,
   });
-  res.redirect(303, session.url)
+  res.redirect(303, session.url);
 
   // res.redirect("/orders");
 }
