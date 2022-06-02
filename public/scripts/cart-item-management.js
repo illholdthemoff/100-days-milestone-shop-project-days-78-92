@@ -23,39 +23,39 @@ async function updateCartItem(event) {
         _csrf: csrfToken,
       }),
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json", // setting the headers so that the JSON knows what to look for iirc
       },
     });
-  } catch (error) {
+  } catch (error) { // if something goes wrong with the page
+    alert("Something went wrong!"); 
+    return;
+  }
+
+  if (!response.ok) { // if something goes wrong with the server (or the other way around I forget)
     alert("Something went wrong!");
     return;
   }
 
-  if (!response.ok) {
-    alert("Something went wrong!");
-    return;
-  }
+  const responseData = await response.json(); // returns a promise resolved when parsing the text as json
 
-  const responseData = await response.json();
-
-  if (responseData.updatedCartData.updatedItemPrice === 0) {
-    form.parentElement.parentElement.remove();
+  if (responseData.updatedCartData.updatedItemPrice === 0) { // roundabout way of saying if the item price is 0 ie removed from cart
+    form.parentElement.parentElement.remove(); // remove item from the card
   } else {
     const cartItemTotalPriceElement =
-      form.parentElement.querySelector(".cart-item-price");
+      form.parentElement.querySelector(".cart-item-price"); // searches the document for the .cart-item-price class
     cartItemTotalPriceElement.textContent =
-      responseData.updatedCartData.updatedItemPrice.toFixed(2);
+      responseData.updatedCartData.updatedItemPrice.toFixed(2); // then throws in its contents(the price) while formatting it to 2 decimal places through the toFixed
   }
 
   cartTotalPriceElement.textContent =
-    responseData.updatedCartData.newTotalPrice.toFixed(2);
+    responseData.updatedCartData.newTotalPrice.toFixed(2); // adds together all the prices of everything in the cart
 
   for (const cartBadgeElement of cartBadgeElements) {
     cartBadgeElement.textContent =
-      responseData.updatedCartData.newTotalQuantity;
+      responseData.updatedCartData.newTotalQuantity; // updates the little counter badge with whatever the new quantity is
   }
 }
 
 for (const formElement of cartItemUpdateFormElements) {
-  formElement.addEventListener("submit", updateCartItem);
+  formElement.addEventListener("submit", updateCartItem); // go to update cart item when the submit button is clicked.
 }
