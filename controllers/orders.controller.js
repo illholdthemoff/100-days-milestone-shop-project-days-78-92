@@ -8,9 +8,11 @@ const stripeObj = stripe(
 );
 
 async function getOrders(req, res) {
+  // searching all orders for a given user
   try {
     const orders = await Order.findAllForUser(res.locals.uid);
     res.render("customer/orders/all-orders", {
+      // rendering all orders
       orders: orders,
     });
   } catch (error) {
@@ -28,7 +30,7 @@ async function addOrder(req, res, next) {
     return next(error);
   }
 
-  const order = new Order(cart, userDocument);
+  const order = new Order(cart, userDocument); // instantiating a new order using the Order constructor
 
   try {
     await order.save();
@@ -40,7 +42,7 @@ async function addOrder(req, res, next) {
   req.session.cart = null;
 
   const session = await stripeObj.checkout.sessions.create({
-    payment_method_types: ["card"],
+    payment_method_types: ["card"], // acceptable payment types
     line_items: cart.items.map(function (item) {
       return {
         price_data: {
