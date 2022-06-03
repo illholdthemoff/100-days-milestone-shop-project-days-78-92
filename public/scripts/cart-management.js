@@ -5,7 +5,7 @@ const cartBadgeElements = document.querySelectorAll(".nav-items .badge");
 
 async function addToCart() {
   const productId = addToCartButtonElement.dataset.productid; // we added the dataset to the add to cart button in product-details.ejs
-  const csrfToken = addToCartButtonElement.dataset.csrf;
+  const csrfToken = addToCartButtonElement.dataset.csrf; // grabbing the csrf token so that we are able to make changes
 
   let response;
   try {

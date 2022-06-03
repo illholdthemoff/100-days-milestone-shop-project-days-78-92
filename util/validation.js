@@ -4,7 +4,7 @@ function isEmpty(value) {
 
 function userCredentialsAreValid(email, password) {
   return (
-    email && email.includes("@") && password && password.trim().length >= 6
+    email && email.includes("@") && password && password.trim().length >= 6 // returns valid if the email has an @ and if the password is at least 6 chars
   );
 }
 

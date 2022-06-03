@@ -26,12 +26,12 @@ async function updateCartItem(event) {
         "Content-Type": "application/json", // setting the headers so that the JSON knows what to look for iirc
       },
     });
-  } catch (error) { // if something goes wrong with the page
+  } catch (error) { // if something like the connection to the server fials
     alert("Something went wrong!"); 
     return;
   }
 
-  if (!response.ok) { // if something goes wrong with the server (or the other way around I forget)
+  if (!response.ok) { // if something goes wrong with the page itself
     alert("Something went wrong!");
     return;
   }

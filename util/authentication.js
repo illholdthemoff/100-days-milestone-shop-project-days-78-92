@@ -5,7 +5,7 @@ function createUserSession(req, user, action) {
 }
 
 function destroyUserAuthSession(req) {
-  req.session.uid = null;
+  req.session.uid = null; // kills current user session
   // req.session.save // not necessary, since the above will save it automatically since it has been changed.
 }
 
